@@ -19,7 +19,7 @@
         <module>mars-common</module>
         <module>mars-web</module>
         <module>mars-generator</module>
-				<module>mars-schedule</module>
+				<module>mars-generator</module>
     </modules>
 
     <properties>
