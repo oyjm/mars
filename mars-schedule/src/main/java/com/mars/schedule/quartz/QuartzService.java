@@ -227,4 +227,15 @@ public class QuartzService {
         }
         return jobList;
     }
+
+    public boolean isRunning(SysScheduleInfo sysScheduleInfo){
+        try {
+            TriggerKey triggerKey = TriggerKey.triggerKey(sysScheduleInfo.getTaskName(), sysScheduleInfo.getTaskGroup());
+
+            scheduler.getTriggerState(triggerKey);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

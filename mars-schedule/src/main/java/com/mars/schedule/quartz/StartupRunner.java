@@ -2,13 +2,10 @@ package com.mars.schedule.quartz;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mars.schedule.bean.SysScheduleInfo;
-import com.mars.schedule.common.SpringUtil;
-import com.mars.schedule.job.Job;
-import com.mars.schedule.mapper.SysScheduleInfoMapper;
+import com.mars.schedule.service.SysScheduleInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -20,20 +17,16 @@ public class StartupRunner implements CommandLineRunner {
     private QuartzService quartzService;
 
     @Autowired
-    private SysScheduleInfoMapper sysScheduleInfoMapper;
+    private SysScheduleInfoService sysScheduleInfoService;
 
     @Override
     public void run(String... args) throws Exception {
-        List<SysScheduleInfo> list = sysScheduleInfoMapper.listAllEnable();
+        List<SysScheduleInfo> list = sysScheduleInfoService.listAllEnable();
         for(SysScheduleInfo sysScheduleInfo:list){
-            quartzService.deleteJob(sysScheduleInfo.getTaskName(), sysScheduleInfo.getTaskGroup());
+            quartzService.deleteJob(sysScheduleInfo);
         }
-        HashMap<String,Object> map = new HashMap<>();
         for(SysScheduleInfo sysScheduleInfo:list){
-            if(StringUtils.isNotBlank(sysScheduleInfo.getParams())){
-                map = JSONObject.parseObject(sysScheduleInfo.getParams(),HashMap.class);
-            }
-            quartzService.addJob(sysScheduleInfo.getTaskName(), sysScheduleInfo.getTaskGroup(), sysScheduleInfo.getCron(), map);
+            quartzService.addJob(sysScheduleInfo);
         }
 
 //        map.put("name",1);

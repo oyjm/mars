@@ -10,6 +10,11 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  resources:
+    static-locations: classpath:/static/,classpath:/views/
   quartz:
     job-store-type: jdbc #数据库方式
     jdbc:
@@ -38,6 +43,10 @@ mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
   type-aliases-package: com.mars.schedule.bean
 
+pagehelper:
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
 #showSql
 logging:
   level:

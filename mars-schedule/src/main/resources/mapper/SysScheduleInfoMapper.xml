@@ -1,8 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.mars.schedule.mapper.SysScheduleInfoMapper">
-    <select id="listAllEnable" resultType="com.mars.schedule.bean.SysScheduleInfo">
-        select * from sys_schedule_info
+    <resultMap id="BaseResultMap" type="com.mars.schedule.bean.SysScheduleInfo">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+        <result column="task_group" jdbcType="VARCHAR" property="taskGroup" />
+        <result column="cron" jdbcType="VARCHAR" property="cron" />
+        <result column="class_name" jdbcType="VARCHAR" property="className" />
+        <result column="method_name" jdbcType="VARCHAR" property="methodName" />
+        <result column="params" jdbcType="VARCHAR" property="params" />
+        <result column="is_start" jdbcType="INTEGER" property="isStart" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="desc" jdbcType="VARCHAR" property="desc" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, task_name, task_group, cron, class_name, method_name, params, is_start, `status`, `desc`
+    </sql>
+    <select id="list" parameterType="com.mars.schedule.bean.SysScheduleInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_schedule_info
+        <where>
+            <if test="taskName != null">
+                and task_name like concat('%',#{taskName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="taskGroup != null">
+                and task_group like concat('%',#{taskGroup,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="className != null">
+                and class_name = #{className,jdbcType=VARCHAR}
+            </if>
+            <if test="methodName != null">
+                and method_name = #{methodName,jdbcType=VARCHAR}
+            </if>
+            <if test="isStart != null">
+                and is_start = #{isStart,jdbcType=INTEGER}
+            </if>
+            <if test="status != null">
+                and `status` = #{status,jdbcType=INTEGER}
+            </if>
+        </where>
     </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_schedule_info
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from sys_schedule_info
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="save" parameterType="com.mars.schedule.bean.SysScheduleInfo">
+        insert into sys_schedule_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="taskName != null">
+                task_name,
+            </if>
+            <if test="taskGroup != null">
+                task_group,
+            </if>
+            <if test="cron != null">
+                cron,
+            </if>
+            <if test="className != null">
+                class_name,
+            </if>
+            <if test="methodName != null">
+                method_name,
+            </if>
+            <if test="params != null">
+                params,
+            </if>
+            <if test="isStart != null">
+                is_start,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="desc != null">
+                `desc`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="taskName != null">
+                #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskGroup != null">
+                #{taskGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="cron != null">
+                #{cron,jdbcType=VARCHAR},
+            </if>
+            <if test="className != null">
+                #{className,jdbcType=VARCHAR},
+            </if>
+            <if test="methodName != null">
+                #{methodName,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null">
+                #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="isStart != null">
+                #{isStart,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="desc != null">
+                #{desc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.mars.schedule.bean.SysScheduleInfo">
+        update sys_schedule_info
+        <set>
+            <if test="taskName != null">
+                task_name = #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="taskGroup != null">
+                task_group = #{taskGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="cron != null">
+                cron = #{cron,jdbcType=VARCHAR},
+            </if>
+            <if test="className != null">
+                class_name = #{className,jdbcType=VARCHAR},
+            </if>
+            <if test="methodName != null">
+                method_name = #{methodName,jdbcType=VARCHAR},
+            </if>
+            <if test="params != null">
+                params = #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="isStart != null">
+                is_start = #{isStart,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=BIT},
+            </if>
+            <if test="desc != null">
+                `desc` = #{desc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
 </mapper>
