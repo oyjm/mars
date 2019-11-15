@@ -30,7 +30,6 @@ public class SysScheduleInfoService {
     public List<SysScheduleInfo> listAllEnable(){
         SysScheduleInfo sysScheduleInfo = new SysScheduleInfo();
         sysScheduleInfo.setStatus(0);
-        sysScheduleInfo.setIsStart(1);
         return sysScheduleInfoMapper.list(sysScheduleInfo);
     }
 
@@ -43,8 +42,8 @@ public class SysScheduleInfoService {
     }
 
     public int save(SysScheduleInfo sysScheduleInfo){
+        quartzService.addJob(sysScheduleInfo);
         sysScheduleInfo.setId(MD5Encoder.encode((sysScheduleInfo.getTaskGroup()+sysScheduleInfo.getTaskName()).getBytes()));
-        sysScheduleInfo.setIsStart(0);
         sysScheduleInfo.setStatus(0);
         return sysScheduleInfoMapper.save(sysScheduleInfo);
     }
@@ -55,33 +54,33 @@ public class SysScheduleInfoService {
 
     public int delete(String id){
         SysScheduleInfo sysScheduleInfo = sysScheduleInfoMapper.findById(id);
-        if(sysScheduleInfo.getIsStart()==1 && sysScheduleInfo.getStatus()==0){
+        if(sysScheduleInfo.getStatus()==0){
             quartzService.deleteJob(sysScheduleInfo);
         }
-        return sysScheduleInfoMapper.delete(id);
+        sysScheduleInfo.setStatus(1);
+        return sysScheduleInfoMapper.update(sysScheduleInfo);
     }
 
-    public void updateIsStart(SysScheduleInfo sysScheduleInfo){
-        SysScheduleInfo current = sysScheduleInfoMapper.findById(sysScheduleInfo.getId());
-        if(sysScheduleInfo.getIsStart() == current.getIsStart()){
+    public void updateIsStart(String id, int isStart){
+        SysScheduleInfo current = sysScheduleInfoMapper.findById(id);
+        if(isStart == 1){
+            quartzService.pauseJob(current);
+        }else{
+            quartzService.resumeJob(current);
+        }
+    }
+
+    public void updateStatus(String id, int status){
+        SysScheduleInfo current = sysScheduleInfoMapper.findById(id);
+        if(status == current.getStatus()){
             return;
         }
-        quartzService.deleteJob(current);
-        if(sysScheduleInfo.getIsStart() == 1) {
+        if(status == 1) {
+            quartzService.deleteJob(current);
+        }else{
             quartzService.addJob(current);
         }
-        sysScheduleInfoMapper.update(sysScheduleInfo);
-    }
-
-    public void updateStatus(SysScheduleInfo sysScheduleInfo){
-        SysScheduleInfo current = sysScheduleInfoMapper.findById(sysScheduleInfo.getId());
-        if(sysScheduleInfo.getStatus() == current.getStatus()){
-            return;
-        }
-        if(sysScheduleInfo.getStatus() == 1) {
-            quartzService.deleteJob(current);
-            sysScheduleInfo.setIsStart(0);
-        }
-        sysScheduleInfoMapper.update(sysScheduleInfo);
+        current.setStatus(status);
+        sysScheduleInfoMapper.update(current);
     }
 }

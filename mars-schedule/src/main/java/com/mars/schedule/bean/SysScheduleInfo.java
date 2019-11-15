@@ -11,9 +11,12 @@ public class SysScheduleInfo implements Serializable {
     private String className;   //执行Job类
     private String methodName;
     private String params;      //参数  多个用逗号分隔
-    private int isStart;        //是否启动  0否  1启动
     private int status;         //是否删除  0正常  1删除
     private String desc;        //任务描述
+    private String triggerState;
+    private String nextFireTime;
+    private String prevFireTime;
+    private String timeZoneId;
 
     public String getId() {
         return id;
@@ -71,14 +74,6 @@ public class SysScheduleInfo implements Serializable {
         this.params = params;
     }
 
-    public int getIsStart() {
-        return isStart;
-    }
-
-    public void setIsStart(int isStart) {
-        this.isStart = isStart;
-    }
-
     public int getStatus() {
         return status;
     }
@@ -93,5 +88,37 @@ public class SysScheduleInfo implements Serializable {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getTriggerState() {
+        return triggerState;
+    }
+
+    public void setTriggerState(String triggerState) {
+        this.triggerState = triggerState;
+    }
+
+    public String getNextFireTime() {
+        return nextFireTime;
+    }
+
+    public void setNextFireTime(String nextFireTime) {
+        this.nextFireTime = nextFireTime;
+    }
+
+    public String getPrevFireTime() {
+        return prevFireTime;
+    }
+
+    public void setPrevFireTime(String prevFireTime) {
+        this.prevFireTime = prevFireTime;
+    }
+
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public void setTimeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
     }
 }

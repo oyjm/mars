@@ -63,14 +63,14 @@ public class ScheduleController {
     }
 
     @RequestMapping("/updateIsStart")
-    public MarsResponse updateIsStart(@RequestBody SysScheduleInfo sysScheduleInfo){
-        sysScheduleInfoService.updateIsStart(sysScheduleInfo);
+    public MarsResponse updateIsStart(@RequestParam("id")String id,@RequestParam("isStart")int isStart){
+        sysScheduleInfoService.updateIsStart(id, isStart);
         return MarsResponse.ok();
     }
 
     @RequestMapping("/updateStatus")
-    public MarsResponse updateStatus(@RequestBody SysScheduleInfo sysScheduleInfo){
-        sysScheduleInfoService.updateStatus(sysScheduleInfo);
+    public MarsResponse updateStatus(@RequestParam("id")String id,@RequestParam("status")int status){
+        sysScheduleInfoService.updateStatus(id, status);
         return MarsResponse.ok();
     }
 

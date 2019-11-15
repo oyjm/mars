@@ -9,44 +9,58 @@
         <result column="class_name" jdbcType="VARCHAR" property="className" />
         <result column="method_name" jdbcType="VARCHAR" property="methodName" />
         <result column="params" jdbcType="VARCHAR" property="params" />
-        <result column="is_start" jdbcType="INTEGER" property="isStart" />
         <result column="status" jdbcType="INTEGER" property="status" />
         <result column="desc" jdbcType="VARCHAR" property="desc" />
+        <result column="trigger_state" jdbcType="VARCHAR" property="triggerState" />
+        <result column="next_fire_time" jdbcType="VARCHAR" property="nextFireTime" />
+        <result column="prev_fire_time" jdbcType="VARCHAR" property="prevFireTime" />
+        <result column="time_zone_id" jdbcType="VARCHAR" property="timeZoneId" />
     </resultMap>
     <sql id="Base_Column_List">
         id, task_name, task_group, cron, class_name, method_name, params, is_start, `status`, `desc`
     </sql>
+    <sql id="all_list">
+        SELECT
+        ID, TASK_NAME, TASK_GROUP, CRON, CLASS_NAME, METHOD_NAME, PARAMS, IS_START, `STATUS`, `DESC`,
+        QRTZ_TRIGGERS.TRIGGER_STATE,
+        QRTZ_TRIGGERS.NEXT_FIRE_TIME,
+        QRTZ_TRIGGERS.PREV_FIRE_TIME,
+        QRTZ_CRON_TRIGGERS.TIME_ZONE_ID
+        FROM
+        SYS_SCHEDULE_INFO
+        LEFT JOIN QRTZ_JOB_DETAILS ON SYS_SCHEDULE_INFO.TASK_NAME = QRTZ_JOB_DETAILS.JOB_NAME
+        AND SYS_SCHEDULE_INFO.TASK_GROUP = QRTZ_JOB_DETAILS.JOB_GROUP
+        LEFT JOIN QRTZ_TRIGGERS ON QRTZ_JOB_DETAILS.SCHED_NAME = QRTZ_TRIGGERS.SCHED_NAME
+        AND QRTZ_JOB_DETAILS.JOB_NAME = QRTZ_TRIGGERS.JOB_NAME
+        AND QRTZ_JOB_DETAILS.JOB_GROUP = QRTZ_TRIGGERS.JOB_GROUP
+        LEFT JOIN QRTZ_CRON_TRIGGERS ON QRTZ_JOB_DETAILS.JOB_NAME = QRTZ_TRIGGERS.JOB_NAME
+        AND QRTZ_TRIGGERS.TRIGGER_NAME = QRTZ_CRON_TRIGGERS.TRIGGER_NAME
+        AND QRTZ_TRIGGERS.TRIGGER_GROUP = QRTZ_CRON_TRIGGERS.TRIGGER_GROUP
+    </sql>
     <select id="list" parameterType="com.mars.schedule.bean.SysScheduleInfo" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from sys_schedule_info
+        <include refid="all_list" />
         <where>
             <if test="taskName != null">
-                and task_name like concat('%',#{taskName,jdbcType=VARCHAR},'%')
+                and sys_schedule_info.task_name like concat('%',#{taskName,jdbcType=VARCHAR},'%')
             </if>
             <if test="taskGroup != null">
-                and task_group like concat('%',#{taskGroup,jdbcType=VARCHAR},'%')
+                and sys_schedule_info.task_group like concat('%',#{taskGroup,jdbcType=VARCHAR},'%')
             </if>
             <if test="className != null">
-                and class_name = #{className,jdbcType=VARCHAR}
+                and sys_schedule_info.class_name = #{className,jdbcType=VARCHAR}
             </if>
             <if test="methodName != null">
-                and method_name = #{methodName,jdbcType=VARCHAR}
-            </if>
-            <if test="isStart != null">
-                and is_start = #{isStart,jdbcType=INTEGER}
+                and sys_schedule_info.method_name = #{methodName,jdbcType=VARCHAR}
             </if>
             <if test="status != null">
-                and `status` = #{status,jdbcType=INTEGER}
+                and sys_schedule_info.`status` = #{status,jdbcType=INTEGER}
             </if>
         </where>
     </select>
 
     <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from sys_schedule_info
-        where id = #{id,jdbcType=VARCHAR}
+        <include refid="all_list" />
+        where sys_schedule_info.id = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="delete" parameterType="java.lang.String">
         delete from sys_schedule_info
@@ -77,9 +91,6 @@
             <if test="params != null">
                 params,
             </if>
-            <if test="isStart != null">
-                is_start,
-            </if>
             <if test="status != null">
                 `status`,
             </if>
@@ -109,9 +120,6 @@
             <if test="params != null">
                 #{params,jdbcType=VARCHAR},
             </if>
-            <if test="isStart != null">
-                #{isStart,jdbcType=BIT},
-            </if>
             <if test="status != null">
                 #{status,jdbcType=BIT},
             </if>
@@ -140,9 +148,6 @@
             </if>
             <if test="params != null">
                 params = #{params,jdbcType=VARCHAR},
-            </if>
-            <if test="isStart != null">
-                is_start = #{isStart,jdbcType=BIT},
             </if>
             <if test="status != null">
                 `status` = #{status,jdbcType=BIT},

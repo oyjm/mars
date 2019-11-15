@@ -233,6 +233,7 @@ public class QuartzService {
             TriggerKey triggerKey = TriggerKey.triggerKey(sysScheduleInfo.getTaskName(), sysScheduleInfo.getTaskGroup());
 
             scheduler.getTriggerState(triggerKey);
+
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
