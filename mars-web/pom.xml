@@ -12,7 +12,7 @@
     <artifactId>mars-web</artifactId>
 
     <properties>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.8.0</shiro.version>
         <kaptcha.version>0.0.9</kaptcha.version>
         <mybatisplus.version>2.1.9</mybatisplus.version>
         <mybatisplus.spring.boot.version>1.0.5</mybatisplus.spring.boot.version>
